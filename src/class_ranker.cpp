@@ -1975,6 +1975,8 @@ void ClassRanker::performRanking()
 	// to preserve original particle order in the data.star file
 	if (do_select)
 	{
+
+    std::cout << "1" << std::endl;
 		// Store original image order
 		long int nr_parts = mydata.MDimg.numberOfObjects();
 		for (long int j = 0; j < nr_parts; j++)
@@ -1983,6 +1985,7 @@ void ClassRanker::performRanking()
 		}
 	}
 
+  std::cout << "2" << std::endl;
 	MetaDataTable MDselected_particles, MDselected_classavgs;
 
 	RFLOAT highscore = 0.0;
@@ -2007,8 +2010,11 @@ void ClassRanker::performRanking()
 
 	std::vector<float> image_vector(features_all_classes.size() * IMGSIZE * IMGSIZE);
 	std::vector<float> feature_vector(features_all_classes.size() * NR_FEAT);
+
+  std::cout << "3" << std::endl;
 	for (int i = 0; i < features_all_classes.size(); i++)
 	{
+		std::cout << "3." << i << std::endl;
 		std::vector<float> f = features_all_classes[i].toNormalizedVector();
 		for (int j = 0; j < NR_FEAT; j++)
 			feature_vector[i*NR_FEAT + j] = f[j];
@@ -2021,6 +2027,7 @@ void ClassRanker::performRanking()
 			image_vector[i * IMGSIZE * IMGSIZE + n] = DIRECT_MULTIDIM_ELEM(img, n);
 		}
 	}
+  std::cout << "4" << std::endl;
 
 	deployTorchModel(fn_pytorch_model, feature_vector, image_vector, scores);
 
@@ -2031,6 +2038,7 @@ void ClassRanker::performRanking()
 		my_min = select_min_score * max_score;
 		my_max = select_max_score * max_score;
 	}
+  std::cout << "5" << std::endl;
 
 
 	MetaDataTable MDbackup;
@@ -2039,6 +2047,7 @@ void ClassRanker::performRanking()
 		MDbackup.addObject();
 		MDbackup.setValue(EMDL_SELECTED, 0);
 	}
+  std::cout << "6" << std::endl;
 
 	long int nr_sel_parts = 0;
 	long int nr_sel_classavgs = 0;
@@ -2066,6 +2075,7 @@ void ClassRanker::performRanking()
 		int iclass = features_all_classes[i].class_index - 1; // class counting in STAR files starts at 1!
 		predicted_scores.at(iclass) = scores[i];
 	}
+  std::cout << "7" << std::endl;
 
 	// Select a minimum number of particles or classes
 	if (do_select && (nr_sel_parts < select_min_parts || nr_sel_classavgs < select_min_classes) )
@@ -2131,6 +2141,7 @@ void ClassRanker::performRanking()
 
 	}
 
+  std::cout << "8" << std::endl;
 
 	// Write optimiser.star and model.star in the output directory.
 	FileName fn_opt_out, fn_model_out, fn_data_out;
